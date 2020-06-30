@@ -79,6 +79,8 @@ export default class ColumnChart {
   }
 
   update ({headerData, bodyData}) {
+    if(bodyData.length) this.element.classList.remove(`column-chart_loading`);
+
     this.subElements.header.textContent = headerData;
     this.subElements.body.innerHTML = this.getColumnBody(bodyData);
   }

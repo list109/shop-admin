@@ -29,6 +29,7 @@ export default class Page {
   }
 
   async updateChartsComponents (from, to) {
+
     const [ordersData, salesData, customersData] = await this.getDataForColumnCharts(from, to);
     const ordersDataTotal = ordersData.reduce((accum, item) => accum + item, 0);
     const salesDataTotal = salesData.reduce((accum, item) => accum + item, 0);
@@ -55,22 +56,22 @@ export default class Page {
     });
 
     const ordersChart = new ColumnChart({
-      data: ordersData,
+      //data: ordersData,
       label: 'orders',
-      value: ordersData.reduce((accum, item) => accum + item, 0),
+      //value: ordersData.reduce((accum, item) => accum + item, 0),
       link: '#'
     });
 
     const salesChart = new ColumnChart({
-      data: salesData,
+      //data: salesData,
       label: 'sales',
-      value: '$' + salesData.reduce((accum, item) => accum + item, 0),
+      //value: '$' + salesData.reduce((accum, item) => accum + item, 0),
     });
 
     const customersChart = new ColumnChart({
-      data: customersData,
+      //data: customersData,
       label: 'customers',
-      value: customersData.reduce((accum, item) => accum + item, 0),
+      //value: customersData.reduce((accum, item) => accum + item, 0),
     });
 
     this.components.sortableTable = sortableTable;
@@ -78,6 +79,8 @@ export default class Page {
     this.components.salesChart = salesChart;
     this.components.customersChart = customersChart;
     this.components.rangePicker = rangePicker;
+
+    this.updateChartsComponents(from, to);
   }
 
   get template () {
