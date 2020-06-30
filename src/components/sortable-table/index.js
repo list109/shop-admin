@@ -106,11 +106,15 @@ export default class SortableTable {
     this.url.searchParams.set('_start', start);
     this.url.searchParams.set('_end', end);
 
-    this.element.classList.add('sortable-table_loading');
-
+    //this.element.classList.add('sortable-table_loading');
+    
+    const {loading} = this.subElements;
+    loading.classList.add('sortable-table__loading-line');
+    
     const data = await fetchJson(this.url);
 
-    this.element.classList.remove('sortable-table_loading');
+    //this.element.classList.remove('sortable-table_loading');
+    loading.classList.remove('sortable-table__loading-line');
 
     return data;
   }
