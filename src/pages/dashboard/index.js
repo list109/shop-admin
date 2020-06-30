@@ -29,21 +29,25 @@ export default class Page {
   }
 
   async updateChartsComponents (from, to) {
+    const {ordersChart, salesChart, customersChart} = this.components;
+    [ordersChart, salesChart, customersChart].forEach(item => item.element.classList.add('column-chart_loading'));
 
     const [ordersData, salesData, customersData] = await this.getDataForColumnCharts(from, to);
     const ordersDataTotal = ordersData.reduce((accum, item) => accum + item, 0);
     const salesDataTotal = salesData.reduce((accum, item) => accum + item, 0);
     const customersDataTotal = customersData.reduce((accum, item) => accum + item, 0);
 
-    this.components.ordersChart.update({headerData: ordersDataTotal, bodyData: ordersData});
-    this.components.salesChart.update({headerData: '$' + salesDataTotal, bodyData: salesData});
-    this.components.customersChart.update({headerData: customersDataTotal, bodyData: customersData});
+    ordersChart.update({headerData: ordersDataTotal, bodyData: ordersData});
+    salesChart.update({headerData: '$' + salesDataTotal, bodyData: salesData});
+    customersChart.update({headerData: customersDataTotal, bodyData: customersData});
+
+    [ordersChart, salesChart, customersChart].forEach(item => item.element.classList.remove('column-chart_loading'));
   }
 
   async initComponents () {
     const to = new Date();
     const from = new Date(to.getTime() - (45 * 24 * 60 * 60 * 1000));
-    const [ordersData, salesData, customersData] = await this.getDataForColumnCharts(from, to);
+    //const [ordersData, salesData, customersData] = await this.getDataForColumnCharts(from, to);
 
     const rangePicker = new RangePicker({
       from,
