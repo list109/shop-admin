@@ -54,7 +54,7 @@ export default class SortableTable {
       if (this.isSortLocally) {
         this.sortLocally(id, newOrder);
       } else {
-        this.sortOnServer(id, newOrder, 1, 1 + this.step);
+        this.sortOnServer(id, newOrder, 0, 1 + this.step);
       }
     }
   };
@@ -67,7 +67,7 @@ export default class SortableTable {
     },
     isSortLocally = false,
     step = 20,
-    start = 1,
+    start = 0,
     end = start + step
   } = {}) {
 
@@ -106,16 +106,11 @@ export default class SortableTable {
     this.url.searchParams.set('_start', start);
     this.url.searchParams.set('_end', end);
 
-    //this.element.classList.add('sortable-table_loading');
-    
-    const {loading} = this.subElements;
-    loading.classList.add('sortable-table__loading-line');
+    this.element.classList.add('sortable-table_loading');
     
     const data = await fetchJson(this.url);
 
-    //this.element.classList.remove('sortable-table_loading');
-    loading.classList.remove('sortable-table__loading-line');
-
+    this.element.classList.remove('sortable-table_loading');
     return data;
   }
 
@@ -221,6 +216,9 @@ export default class SortableTable {
   }
 
   async sortOnServer (id, order, start, end) {
+    const {body} = this.subElements;
+    body.innerHTML = '';
+
     const data = await this.loadData(id, order, start, end);
 
     this.renderRows(data);
