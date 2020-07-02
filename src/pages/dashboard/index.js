@@ -24,8 +24,18 @@ export default class Page {
   }
 
   async updateTableComponent (from, to) {
+    const {sortableTable} = this.components;
+    const {body} = sortableTable.subElements;
+    
+    body.innerHTML = '';
+    
+    sortableTable.element.classList.add('sortable-table_loading');
+
     const data = await fetchJson(`${process.env.BACKEND_URL}api/dashboard/bestsellers?_start=1&_end=20&from=${from.toISOString()}&to=${to.toISOString()}`);
-    this.components.sortableTable.addRows(data);
+
+    sortableTable.element.classList.remove('sortable-table_loading');
+
+    this.components.sortableTable.renderRows(data);
   }
 
   async updateChartsComponents (from, to) {
