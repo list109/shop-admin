@@ -10,6 +10,12 @@ export default class Page {
   subElements = {};
   components = {};
 
+  updateData = (event) => {
+    const { from, to } = event.detail;
+    this.updateChartsComponents(from, to);
+    this.updateTableComponent(from, to);
+  }
+
   async getDataForColumnCharts (from, to) {
     const ORDERS = `${process.env.BACKEND_URL}api/dashboard/orders?from=${from.toISOString()}&to=${to.toISOString()}`;
     const SALES = `${process.env.BACKEND_URL}api/dashboard/sales?from=${from.toISOString()}&to=${to.toISOString()}`;
@@ -155,14 +161,12 @@ export default class Page {
   }
 
   initEventListeners () {
-    this.components.rangePicker.element.addEventListener('date-select', event => {
-      const { from, to } = event.detail;
-      this.updateChartsComponents(from, to);
-      this.updateTableComponent(from, to);
-    });
+    this.components.rangePicker.element.addEventListener('date-select', this.updateData);
   }
 
   destroy () {
+    this.components.rangePicker.element.removeEventListener('date-select', this.updateData);
+
     for (const component of Object.values(this.components)) {
       component.destroy();
     }
