@@ -64,7 +64,7 @@ export default class Page {
         return `
         <div class="categories">
             <div class="content__top-panel">
-                <h1 class="page-title">Categories</h1>
+                <h1 class="page-title">Categories product</h1>
             </div>
             <div data-elem="categoriesContainer">${this.getCategoriesTemplate()}</div> 
         </div>`;
