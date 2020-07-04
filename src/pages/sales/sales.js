@@ -28,6 +28,11 @@ const header = [
       id: 'totalCost',
       title: 'Price',
       sortable: true,
+      template: data => {
+        return `<div class="sortable-table__cell">
+            $${data}
+          </div>`
+      }
     },
     {
       id: 'delivery',
