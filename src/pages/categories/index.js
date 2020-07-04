@@ -2,7 +2,6 @@ import SortableList from '../../components/sortable-list/index.js';
 import Notification from '../../components/notification/index.js';
 
 import fetchJson from '../../utils/fetch-json.js';
-console.log(123);
 
 export default class Page {
     element;
@@ -65,7 +64,7 @@ export default class Page {
         return `
         <div class="categories">
             <div class="content__top-panel">
-                <h1 class="page-title">Категории товаров</h1>
+                <h1 class="page-title">Categories</h1>
             </div>
             <div data-elem="categoriesContainer">${this.getCategoriesTemplate()}</div> 
         </div>`;
@@ -128,7 +127,7 @@ export default class Page {
     }
 
     destroy() {
-        Notification?.prevElem.remove();
+        Notification?.prevElem?.remove();
         this.element.removeEventListener('sortable-list-reorder', this.updateData);
 
         for (const component of Object.values(this.components)) {
