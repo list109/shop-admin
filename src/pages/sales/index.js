@@ -9,6 +9,11 @@ export default class Page {
     subElements = {};
     components = {};
 
+    updateData = ({detail}) => {
+        const { from, to } = detail;
+        this.updateTableComponent(from, to);
+    }
+
     async updateTableComponent(from, to) {
         const { sortableTable } = this.components;
         const { body } = sortableTable.subElements;
@@ -100,13 +105,12 @@ export default class Page {
     }
 
     initEventListeners() {
-        this.components.rangePicker.element.addEventListener('date-select', event => {
-            const { from, to } = event.detail;
-            this.updateTableComponent(from, to);
-        });
+        this.components.rangePicker.element.addEventListener('date-select', this.updateData);
     }
 
     destroy () {
+      this.components.rangePicker.element.removeEventListener('date-select', this.updateData);
+
       for (const component of Object.values(this.components)) {
         component.destroy();
       }
