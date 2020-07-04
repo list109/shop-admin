@@ -52,7 +52,7 @@ export default class Page {
         return `
         <div class="sales">
           <div class="content__top-panel">
-            <h2 class="page-title">Sellers</h2>
+            <h2 class="page-title">Sales</h2>
             <!-- RangePicker component -->
             <div data-element="rangePicker"></div>
           </div>
