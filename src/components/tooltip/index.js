@@ -57,10 +57,14 @@ class Tooltip {
   }
 
   moveTooltip(event) {
-    const left = event.clientX + 10;
-    const top = event.clientY + 10;
+    let left = event.clientX + 10;
+    let top = event.clientY + 10;
 
-    // TODO: Add logic for window borders
+    const {offsetWidth, offsetHeight} = this.element;
+    const {clientWidth, clientHeight} = document.documentElement;
+    
+    if(left + offsetWidth > clientWidth) left = clientWidth - offsetWidth;
+    if(top + offsetHeight > clientHeight) top = clientHeight - offsetHeight;
 
     this.element.style.left = left + 'px';
     this.element.style.top = top + 'px';
