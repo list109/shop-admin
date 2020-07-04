@@ -75,44 +75,44 @@ export default class ProductForm {
       <form data-element="productForm" class="form-grid">
         <div class="form-group form-group__half_left">
           <fieldset>
-            <label class="form-label">Название товара</label>
+            <label class="form-label">Product name</label>
             <input required
               id="title"
               value=""
               type="text"
               name="title"
               class="form-control"
-              placeholder="Название товара">
+              placeholder="Product name">
           </fieldset>
         </div>
 
         <div class="form-group form-group__wide">
-          <label class="form-label">Описание</label>
+          <label class="form-label">Description</label>
           <textarea required
             id="description"
             class="form-control"
             name="description"
-            placeholder="Описание товара"></textarea>
+            placeholder="Product description"></textarea>
         </div>
 
         <div class="form-group form-group__wide">
-          <label class="form-label">Фото</label>
+          <label class="form-label">Images</label>
 
           <div data-element="imageListContainer"></div>
 
           <button data-element="uploadImage" type="button" class="button-primary-outline">
-            <span>Загрузить</span>
+            <span>Upload</span>
           </button>
         </div>
 
         <div class="form-group form-group__half_left">
-          <label class="form-label">Категория</label>
+          <label class="form-label">Category</label>
             ${this.createCategoriesSelect()}
         </div>
 
         <div class="form-group form-group__half_left form-group__two-col">
           <fieldset>
-            <label class="form-label">Цена ($)</label>
+            <label class="form-label">Price ($)</label>
             <input required
               id="price"
               value=""
@@ -122,7 +122,7 @@ export default class ProductForm {
               placeholder="${this.defaultFormData.price}">
           </fieldset>
           <fieldset>
-            <label class="form-label">Скидка ($)</label>
+            <label class="form-label">Discount ($)</label>
             <input required
               id="discount"
               value=""
@@ -134,7 +134,7 @@ export default class ProductForm {
         </div>
 
         <div class="form-group form-group__part-half">
-          <label class="form-label">Количество</label>
+          <label class="form-label">Quantity</label>
           <input required
             id="quantity"
             value=""
@@ -145,16 +145,16 @@ export default class ProductForm {
         </div>
 
         <div class="form-group form-group__part-half">
-          <label class="form-label">Статус</label>
+          <label class="form-label">Status</label>
           <select id="status" class="form-control" name="status">
-            <option value="1">Активен</option>
-            <option value="0">Неактивен</option>
+            <option value="1">Active</option>
+            <option value="0">Inactive</option>
           </select>
         </div>
 
         <div class="form-buttons">
           <button type="submit" name="save" class="button-primary-outline">
-            ${this.productId ? 'Сохранить' : 'Добавить'} товар
+            ${this.productId ? 'Save' : 'Add'} product
           </button>
         </div>
       </form>
@@ -167,13 +167,13 @@ export default class ProductForm {
     const productPromise = this.productId
       ? this.loadProductData(this.productId)
       : Promise.resolve([this.defaultFormData]);
-
+   
     const [categoriesData, productResponse] = await Promise.all([categoriesPromise, productPromise]);
     const [productData] = productResponse;
 
     this.formData = productData;
     this.categories = categoriesData;
-
+    
     this.renderForm();
     this.setFormData();
     this.createImagesList();
@@ -195,20 +195,26 @@ export default class ProductForm {
 
   getEmptyTemplate() {
     return `<div>
-      <h1 class="page-title">Страница не найдена</h1>
-      <p>Извините, данный товар не существует</p>
+      <h1 class="page-title">Page is not found</h1>
+      <p>Sorry, the product is not exist</p>
     </div>`;
   }
 
   async save() {
     const product = this.getFormData();
-    const result = await fetchJson(`${process.env.BACKEND_URL}api/rest/products`, {
+    let result;
+    try{
+    result = await fetchJson(`${process.env.BACKEND_URL}api/rest/products`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(product)
     });
+    } catch({message}) {
+      this.element.dispatchEvent(new CustomEvent('product-canceled', {detail: message}));
+      return;
+    }
 
     this.dispatchEvent(result.id);
   }
@@ -315,13 +321,13 @@ export default class ProductForm {
     wrapper.innerHTML = `
       <li class="products-edit__imagelist-item sortable-list__item">
         <span>
-          <img src="icon-grab.svg" data-grab-handle alt="grab">
+          <img src="../icon-grab.svg" data-grab-handle alt="grab">
           <img class="sortable-table__cell-img" alt="${escapeHtml(name)}" src="${escapeHtml(url)}">
           <span>${escapeHtml(name)}</span>
         </span>
 
         <button type="button">
-          <img src="icon-trash.svg" alt="delete" data-delete-handle>
+          <img src="../icon-trash.svg" alt="delete" data-delete-handle>
         </button>
       </li>`;
 
