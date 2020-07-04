@@ -72,14 +72,15 @@ export default class Page {
 
     const sortableTable = new SortableTable(header, {
       url: `api/dashboard/bestsellers?_start=1&_end=20&from=${from.toISOString()}&to=${to.toISOString()}`,
-      isSortLocally: true
+      isSortLocally: true,
+      isRowLink: true
     });
 
     const ordersChart = new ColumnChart({
       //data: ordersData,
       label: 'orders',
       //value: ordersData.reduce((accum, item) => accum + item, 0),
-      link: '#'
+      link: '/sales'
     });
 
     const salesChart = new ColumnChart({
@@ -137,6 +138,7 @@ export default class Page {
 
     this.renderComponents();
     this.initEventListeners();
+    
 
     return this.element;
   }
