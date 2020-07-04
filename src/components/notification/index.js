@@ -26,8 +26,7 @@ export default class NotificationMessage {
                         ${this.message}
                     </div>
                 </div>
-            </div>
-        `;
+            </div>`;
     }
 
     show(parent = document.body) {
