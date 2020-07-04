@@ -22,12 +22,12 @@ const header = [
     title: 'Category',
     sortable: true,
     sortType: 'string',
-    template: (data) => `<div class="sortable-table__cell">
+    template: ({title, category}) => `<div class="sortable-table__cell">
         <span data-tooltip="
           <div class=&quot;sortable-table-tooltip&quot;>
-            <span class=&quot;sortable-table-tooltip__category&quot;>Компьютеры</span> /
-            <b class=&quot;sortable-table-tooltip__subcategory&quot;>Компьютеры, ноутбуки и ПО</b>
-          </div>">${data.title}</span>
+            <span class=&quot;sortable-table-tooltip__category&quot;>${category.title}</span> /
+            <b class=&quot;sortable-table-tooltip__subcategory&quot;>${title}</b>
+          </div>">${title}</span>
         </div>`,
   },
   {
