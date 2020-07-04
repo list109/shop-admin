@@ -170,21 +170,19 @@ export default class SortableTable {
   }
 
   getTableRows(data) {
-    // return data.map(item => `
-    //     <div class="sortable-table__row">
-    //       ${this.getTableRow(item, data)}
-    //     </div>`).join('');
-    return data.map(item => `
+    return this.isRowLink ?
+      data
+        .map(item => `
           <a href="/products/${item.id}" class="sortable-table__row">
             ${this.getTableRow(item, data)}
-          </a>`).join('');
-    // switch (this.isRowLink) {
-    //   case false:
-    //     return getRows();
-    //   case true:
-    //   default: 
-    //     return getLinkRows();
-    // }
+          </a>`)
+        .join('') :
+      data  
+        .map(item => `
+          <div  class="sortable-table__row">
+            ${this.getTableRow(item, data)}
+          </div>`)
+        .join('');
   }
 
   getTableRow(item) {
