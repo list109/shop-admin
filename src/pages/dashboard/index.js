@@ -163,11 +163,16 @@ export default class Page {
   }
 
   initEventListeners () {
-    this.components.rangePicker.element.addEventListener('date-select', this.updateData);
+    const {rangePicker} = this.components;
+
+    rangePicker.element.addEventListener('date-select', this.updateData);
   }
 
   destroy () {
-    this.components.rangePicker.element.removeEventListener('date-select', this.updateData);
+    const {rangePicker} = this.components;
+
+    Notification?.prevElem?.remove();
+    rangePicker.element.removeEventListener('date-select', this.updateData);
 
     for (const component of Object.values(this.components)) {
       component.destroy();
