@@ -15,7 +15,6 @@ router
   .addRoute(/^404\/?$/, 'error404')
   .setNotFoundPagePath('error404')
   .listen();
-  
 
 function onClick({ target, currentTarget }) {
   const toggleBtn = target.closest('.sidebar__toggler');
@@ -30,17 +29,16 @@ function onClick({ target, currentTarget }) {
     categoryItem.classList.toggle('category_open');
     return;
   }
-  
 
-  const sidebar = document.querySelector('.sidebar__nav'); 
+  const sidebar = document.querySelector('.sidebar__nav');
   const link = target.closest('a');
   const href = link?.getAttribute('href');
-  if(href && href.startsWith('/')) {
-    const {children: [...items]} = sidebar;
-    
+  if (href && href.startsWith('/')) {
+    const { children: [...items] } = sidebar;
+
     items.forEach(item => {
       item.classList.remove('active');
-      if(item.firstElementChild.matches(`[href="${href}"]`)) item.classList.add('active');
+      if (item.firstElementChild.matches(`[href="${href}"]`)) item.classList.add('active');
     });
 
     return;
@@ -51,10 +49,10 @@ document.body.addEventListener('click', onClick);
 
 
 function initLink() {
-  const {pathname} = window.location;
+  const { pathname } = window.location;
   const [...links] = document.querySelectorAll('[data-page]');
   const link = links.find(link => link.matches(`[href="${pathname}"]`));
-  if(link) link.parentNode.className = 'active';
+  if (link) link.parentNode.className = 'active';
 }
 
 initLink();
