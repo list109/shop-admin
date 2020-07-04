@@ -10,13 +10,12 @@ export default class SortableTable {
   step = 20;
   start = 1;
   end = this.start + this.step;
-  isRowLink;
 
   onWindowScroll = async () => {
     const { bottom } = this.element.getBoundingClientRect();
     const { id, order } = this.sorted;
-
-    if (bottom < document.documentElement.clientHeight && !this.loading && !this.sortLocally) {
+    
+    if (bottom < document.documentElement.clientHeight && !this.loading && this.isInfinityScroll) {
       this.start = this.end;
       this.end = this.start + this.step;
 
@@ -71,6 +70,7 @@ export default class SortableTable {
     start = 0,
     end = start + step,
     isRowLink = false,
+    isInfinityScroll = false,
   } = {}) {
 
     this.headersConfig = headersConfig;
@@ -81,6 +81,7 @@ export default class SortableTable {
     this.start = start;
     this.end = end;
     this.isRowLink = isRowLink;
+    this.isInfinityScroll = isInfinityScroll;
 
     this.render();
   }
@@ -103,7 +104,10 @@ export default class SortableTable {
     return this.element;
   }
 
-  async loadData(id, order, start = this.start, end = this.end) {
+  async loadData(id = this.sorted.id, 
+                 order = this.sorted.order, 
+                 start = this.start, 
+                 end = this.end) {
     this.url.searchParams.set('_sort', id);
     this.url.searchParams.set('_order', order);
     this.url.searchParams.set('_start', start);
