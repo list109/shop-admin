@@ -7,23 +7,68 @@ export default class Page {
   subElements = {};
   components = {};
 
-  updateData = ({detail}) => {
-    const {from, to} = detail;
-    this.updateTableComponent(from, to);
+  updateData = ({detail, type, target}) => {
+    switch(type) {
+      case 'range-select': 
+        this.updateTableByRange(detail);
+        break
+      case 'input':
+        this.updateTableByInput(target);
+    }
   }
 
-  async updateTableComponent(from, to) {
+  updateTableByRange({from, to}) {
     const {productsContainer: sortableTable} = this.components;
-    const {body} = sortableTable.subElements;
     const {url} = sortableTable;
-
-    body.innerHTML = '';
 
     url.searchParams.set('price_gte', from);
     url.searchParams.set('price_lte', to);
     
     sortableTable.sortOnServer()
   };
+
+  updateTableByInput(elem) {
+    const {filterName, filterStatus} = this.subElements;
+    
+    if(elem === filterName) this.sortByNameInput(filterName);
+    if(elem === filterStatus) this.sortByStatusInput(filterStatus);
+  }
+
+  sortByNameInput({value}) {
+    const {productsContainer: sortableTable} = this.components;
+    const {url, step} = sortableTable;
+
+    sortableTable.start = 0;
+    sortableTable.end = step;
+
+    url.searchParams.set('title_like', value);
+
+    sortableTable.sortOnServer();
+  }
+
+  sortByStatusInput({value}) {
+    const {productsContainer: sortableTable} = this.components;
+    const {url, step} = sortableTable;
+
+    sortableTable.start = 0;
+    sortableTable.end = step;
+
+    switch(Boolean(value)) {
+      case true: 
+        url.searchParams.set('status', value);
+        break
+      case false: 
+        url.searchParams.delete('status');
+    }
+
+    sortableTable.sortOnServer();
+  }
+
+  clearFilters = () => {
+    const {filterName} = this.subElements;
+
+    filterName.value = '';
+  }
 
   async render() {
     const element = document.createElement('div');
@@ -86,7 +131,7 @@ export default class Page {
     return `
     <div class="products-list">
       <div class="content__top-panel">
-        <h1 class="page-title">List products</h1>
+        <h1 class="page-title">Products list</h1>
         <a href="/products/add" class="button-primary">Add product</a>
       </div>
 
@@ -103,14 +148,14 @@ export default class Page {
     <form class="form-inline">
       <div class="form-group">
         <label class="form-label">Sort by:</label>
-        <input type="text" data-elem="filterName" class="form-control" placeholder="Product name">
+        <input type="text" data-element="filterName" class="form-control" placeholder="Product name">
       </div>
       <div class="form-group" data-element="sliderContainer">
         <label class="form-label">Price:</label>
       </div>
       <div class="form-group">
         <label class="form-label">Status:</label>
-        <select class="form-control" data-elem="filterStatus">
+        <select class="form-control" data-element="filterStatus">
           <option value="" selected="">Anything</option>
           <option value="1">Active</option>
           <option value="0">Inactive</option>
@@ -120,15 +165,19 @@ export default class Page {
   }
 
   initEventListeners () {
-    const {sliderContainer} = this.components;
-
+    const {sliderContainer, productsContainer} = this.components;
+    
+    productsContainer.element.addEventListener('clear-filters', this.clearFilters)
     sliderContainer.element.addEventListener('range-select', this.updateData);
+    this.element.addEventListener('input', this.updateData);
   }
 
   destroy () {
-    const {sliderContainer} = this.components;
+    const {sliderContainer, productsContainer} = this.components;
 
+    productsContainer.element.removeEventListener('clear-filters', this.clearFilters)
     sliderContainer.element.removeEventListener('range-select', this.updateData);
+    this.element.removeEventListener('input', this.updateData);
 
     for (const component of Object.values(this.components)) {
       component.destroy();
