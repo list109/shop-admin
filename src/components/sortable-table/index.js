@@ -16,13 +16,20 @@ export default class SortableTable {
     const { id, order } = this.sorted;
     
     if (bottom < document.documentElement.clientHeight && !this.loading && this.isInfinityScroll) {
+
       this.start = this.end;
       this.end = this.start + this.step;
 
       this.loading = true;
 
-      const data = await this.loadData(id, order, this.start, this.end);
-      this.update(data);
+      const {headers} = await fetch(this.url);
+      const result = headers.get('x-total-count');
+      const rest = Boolean(parseInt(result, 10));
+      
+      if(rest) {
+        const data = await this.loadData(id, order, this.start, this.end);
+        this.update(data);
+      }
 
       this.loading = false;
     }
