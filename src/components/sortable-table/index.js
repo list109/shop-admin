@@ -35,8 +35,15 @@ export default class SortableTable {
     }
   };
 
-  onSortClick = event => {
-    const column = event.target.closest('[data-sortable="true"]');
+  onClick = ({target}) => {
+    const column = target.closest('[data-sortable="true"]');
+    if(column) this.sortByClick(column);
+
+    const clearBtn = target.closest('[data-element="clearingButton"]');
+    if(clearBtn) this.resetByClick();
+  }
+
+  sortByClick(column) {
     const toggleOrder = order => {
       const orders = {
         asc: 'desc',
@@ -65,6 +72,16 @@ export default class SortableTable {
       }
     }
   };
+
+  resetByClick() {
+    this.url.searchParams.delete('title_like');
+
+    this.sortOnServer();
+
+    this.element.dispatchEvent(new CustomEvent('clear-filters', {
+      bubbles: true,
+    }));
+  } 
 
   constructor(headersConfig = [], {
     url = '',
@@ -220,13 +237,18 @@ export default class SortableTable {
         <div data-element="loading" class="loading-line sortable-table__loading-line"></div>
 
         <div data-element="emptyPlaceholder" class="sortable-table__empty-placeholder">
-          No products
+          <p>There are no products matching the chosen enter</p>
+          <button type="button" class="button-primary-outline" data-element="clearingButton">
+            Clear the filters
+          </button>
         </div>
       </div>`;
   }
 
   initEventListeners() {
-    this.subElements.header.addEventListener('pointerdown', this.onSortClick);
+    const {clearingButton, header} = this.subElements;
+
+    this.element.addEventListener('pointerdown', this.onClick);
     document.addEventListener('scroll', this.onWindowScroll);
   }
 
@@ -286,6 +308,8 @@ export default class SortableTable {
 
   remove() {
     this.element.remove();
+
+    this.element.removeEventListener('pointerdown', this.onClick);
     document.removeEventListener('scroll', this.onWindowScroll);
   }
 
