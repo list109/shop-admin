@@ -24,7 +24,7 @@ export default class Page {
     url.searchParams.set('price_gte', from);
     url.searchParams.set('price_lte', to);
     
-    sortableTable.sortOnServer()
+    sortableTable.sortOnServer();
   };
 
   updateTableByInput(elem) {
@@ -36,22 +36,16 @@ export default class Page {
 
   sortByNameInput({value}) {
     const {productsContainer: sortableTable} = this.components;
-    const {url, step} = sortableTable;
-
-    sortableTable.start = 0;
-    sortableTable.end = step;
+    const {url} = sortableTable;
 
     url.searchParams.set('title_like', value);
-
+      
     sortableTable.sortOnServer();
   }
 
   sortByStatusInput({value}) {
     const {productsContainer: sortableTable} = this.components;
-    const {url, step} = sortableTable;
-
-    sortableTable.start = 0;
-    sortableTable.end = step;
+    const {url} = sortableTable;
 
     switch(Boolean(value)) {
       case true: 
@@ -64,10 +58,22 @@ export default class Page {
     sortableTable.sortOnServer();
   }
 
-  clearFilters = () => {
-    const {filterName} = this.subElements;
+  clearFilters = async () => {
+    const {filterName, filterStatus} = this.subElements;
+    const {productsContainer: sortableTable, sliderContainer: slider} = this.components;
+    const {url} = sortableTable;
+    const {min, max} = slider;
+
+    url.searchParams.set('price_gte', min);
+    url.searchParams.set('price_lte', max);
+    url.searchParams.delete('status');
+    url.searchParams.delete('title_like');
 
     filterName.value = '';
+    filterStatus.selectedIndex = 0;
+    slider.reset();
+
+    sortableTable.sortOnServer();
   }
 
   async render() {
