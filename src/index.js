@@ -34,25 +34,25 @@ function onClick({ target, currentTarget }) {
   const link = target.closest('a');
   const href = link?.getAttribute('href');
   if (href && href.startsWith('/')) {
-    const { children: [...items] } = sidebar;
-
-    items.forEach(item => {
-      item.classList.remove('active');
-      if (item.firstElementChild.matches(`[href="${href}"]`)) item.classList.add('active');
-    });
-
-    return;
+    initLink(href);
   }
 }
+
+function initLink(pathname) {
+  
+  const index = pathname.indexOf('/', 1);
+  const page = (~index) ? pathname.slice(0, index) : pathname.slice(0);
+  
+  const [...links] = document.querySelectorAll('[data-page]');
+  links.forEach(link => link.parentNode.className = '');
+  const link = links.find(link => link.matches(`[href="${page}"]`));
+  if (link) link.parentNode.className = 'active';
+}
+
+const { pathname } = window.location;
+
+initLink(pathname);
 
 document.body.addEventListener('click', onClick);
 
 
-function initLink() {
-  const { pathname } = window.location;
-  const [...links] = document.querySelectorAll('[data-page]');
-  const link = links.find(link => link.matches(`[href="${pathname}"]`));
-  if (link) link.parentNode.className = 'active';
-}
-
-initLink();
