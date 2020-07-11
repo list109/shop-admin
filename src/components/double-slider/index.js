@@ -160,6 +160,17 @@ export default class DoubleSlider {
         }));
     }
 
+    reset() {
+        const {thumbLeft, thumbRight, from, to, progress} = this.subElements;
+        
+        thumbLeft.style.left = 0;
+        thumbRight.style.right = 0;
+        progress.style.left = 0;
+        progress.style.right = 0;
+        from.textContent = this.min;
+        to.textContent = this.max;
+    }
+
     remove() {
         this.element.remove();
     }
