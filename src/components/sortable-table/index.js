@@ -10,6 +10,7 @@ export default class SortableTable {
   step = 20;
   start = 1;
   end = this.start + this.step;
+  isRestData = true;
 
   onWindowScroll = async () => {
     const { bottom } = this.element.getBoundingClientRect();
@@ -21,15 +22,15 @@ export default class SortableTable {
       this.end = this.start + this.step;
 
       this.loading = true;
-
-      const {headers} = await fetch(this.url);
-      const result = headers.get('x-total-count');
-      const rest = Boolean(parseInt(result, 10));
       
-      if(rest) {
+      if(this.isRestData) {
         const data = await this.loadData(id, order, this.start, this.end);
         this.update(data);
       }
+
+      const {headers} = await fetch(this.url);
+      const result = headers.get('x-total-count');
+      this.isRestData = Boolean(parseInt(result, 10));
 
       this.loading = false;
     }
@@ -68,16 +69,12 @@ export default class SortableTable {
       if (this.isSortLocally) {
         this.sortLocally(id, newOrder);
       } else {
-        this.sortOnServer(id, newOrder, 0, 1 + this.step);
+        this.sortOnServer(id, newOrder);
       }
     }
   };
 
   resetByClick() {
-    this.url.searchParams.delete('title_like');
-
-    this.sortOnServer();
-
     this.element.dispatchEvent(new CustomEvent('clear-filters', {
       bubbles: true,
     }));
@@ -128,10 +125,7 @@ export default class SortableTable {
     return this.element;
   }
 
-  async loadData(id = this.sorted.id, 
-                 order = this.sorted.order, 
-                 start = this.start, 
-                 end = this.end) {
+  async loadData(id, order, start, end) {
     this.url.searchParams.set('_sort', id);
     this.url.searchParams.set('_order', order);
     this.url.searchParams.set('_start', start);
@@ -258,9 +252,14 @@ export default class SortableTable {
     this.subElements.body.innerHTML = this.getTableBody(sortedData);
   }
 
-  async sortOnServer(id, order, start, end) {
+  async sortOnServer(id = this.sorted.id, 
+                     order = this.sorted.order, 
+                     start = 0, 
+                     end = this.step) {
+    
     const { body } = this.subElements;
     body.innerHTML = '';
+    this.isRestData = true;
 
     const data = await this.loadData(id, order, start, end);
 
