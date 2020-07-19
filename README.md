@@ -1,3 +1,3 @@
-# Project Structure
+# The Project Structure
 
-Project Structure using just the webpack for build (learn.javascipt.ru)
+The Project Structure using just the webpack for build (learn.javascipt.ru)
